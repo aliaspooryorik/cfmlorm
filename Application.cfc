@@ -1,5 +1,5 @@
 component {
-	this.datasource = "pineandoakoutlet";
+	this.datasource = "cfmlorm";
 	this.ormenabled = true;
 	
 	function onRequestStart(){

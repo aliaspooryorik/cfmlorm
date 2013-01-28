@@ -1,7 +1,7 @@
 component {
 
 	/* ---------------------------- CONSTRUCTOR ---------------------------- */  
-	function init( required entityName ){
+	any function init( required entityName ){
 		variables.entityName = arguments.entityName;
 		return this;
 	}
@@ -22,6 +22,7 @@ component {
 		return result;
 	}
 	
+	// TODO: should this match GORM?
 	// Finds the first matching result for the given query or null if no instance is found
 	any function find( required string hql, any params, struct queryOptions ){
 		var result = [];
@@ -33,6 +34,7 @@ component {
 		}
 	}
 
+	// TODO: should this match GORM?
 	// Finds all of domain class instances matching the specified query
 	any function findAll( required string hql, any params={}, struct queryOptions ){
 		if ( StructKeyExists( arguments, "queryOptions" ) ){
@@ -51,21 +53,21 @@ component {
 	// Retrieves a List of instances of the domain class for the specified ids, ordered by the original ids list.
 	// If some of the provided ids are null or there are no instances with these ids, the resulting List will 
 	// have null values in those positions.
-	array function getAll( ids ){
+	array function getAll( array ids ){
 		var hql = ' from ' & variables.entityName & ' ';
 		if ( StructKeyExists( arguments, "ids" ) ){
-			hql &= ' where id in ( :ids ) ';
-			return ORMExecuteQuery( hql, arguments.ids );
+			hql &= ' where id in ( :list ) ';
+			return ORMExecuteQuery( hql, { list=arguments.ids } );
 		}else{
-			return ORMExecuteQuery( hql );
+			return ORMExecuteQuery( hql, [] );
 		}
 	}
 	
-	array function list(){
-		param name="arguments.order" default="";
+	array function list( string sort, string order ){
 		var hql = ' from ' & variables.entityName & ' ';
 		
 		if ( StructKeyExists( arguments, "sort" ) ){
+			param name="arguments.order" default="";
 			arguments.sort &= ' ' & arguments.order;
 			return queryBuilder( {}, arguments.sort );
 		}else{
@@ -88,11 +90,16 @@ component {
 		var hql = ' from ' & variables.entityName & ' ';
 		var params = {};
 		var result = [];
-		var index = 0;
+		var whereClause = 0;
 		
 		if ( StructKeyExists( arguments, "filtercriteria" ) && StructCount( arguments.filtercriteria ) ) {
-			hql &= ' where ';
 			for ( var key in arguments.filtercriteria ){
+				if ( whereClause == 0 ){
+					whereClause = 1;
+					hql &= ' where ';
+				}else{
+					hql &= ' and ';
+				}
 				hql &= LCase( key ) & ' = :#key# ';
 				params[ key ] = arguments.filtercriteria[ key ];
 				//ArrayAppend( params, arguments.filtercriteria[ key ] );
