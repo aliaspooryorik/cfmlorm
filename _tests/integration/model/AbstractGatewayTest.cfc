@@ -70,6 +70,10 @@ component extends="mxunit.framework.TestCase" {
 	function findBy(){
 		var result = CUT.findByForename( 'John' );
 		assertTrue( IsInstanceOf( result, "Author" ) );
+		var result = CUT.findByForenameAndSurname( 'John', 'Whish' );
+		assertTrue( IsInstanceOf( result, "Author" ) );
+		assertTrue( result.getForename() == "John" );
+		assertTrue( result.getSurname() == "Whish" );
 	}
 	function findAllBy(){
 		var result = CUT.findAllBySurname( 'Whish' );
