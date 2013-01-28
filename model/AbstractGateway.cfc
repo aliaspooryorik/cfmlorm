@@ -6,7 +6,21 @@ component {
 		return this;
 	}
 	
-	/* ---------------------------- PUBLIC ---------------------------- */  
+	/* ---------------------------- PUBLIC ---------------------------- */
+	
+	boolean function delete( param ){
+		var result = false;
+		if ( IsObject( arguments.param ) ){
+			var Entity = arguments.param;
+		}else{
+			var Entity = get( arguments.id );
+		}
+		if ( !IsNull( Entity ) ){
+			result = true;
+			EntityDelete( Entity );
+		}
+		return result;
+	}
 	
 	// Finds the first matching result for the given query or null if no instance is found
 	any function find( required string hql, any params, struct queryOptions ){
@@ -27,14 +41,43 @@ component {
 			return ORMExecuteQuery( hql, params );
 		}
 	}
-
-
+	
+	// Retrieves an instance of the domain class for the specified id. 
+	// null is returned if the row with the specified id doesn't exist.
+	any function get( id ){
+		return EntityLoadByPK( variables.entityName, arguments.id );
+	}
+	 
+	// Retrieves a List of instances of the domain class for the specified ids, ordered by the original ids list.
+	// If some of the provided ids are null or there are no instances with these ids, the resulting List will 
+	// have null values in those positions.
+	array function getAll( ids ){
+		var hql = ' from ' & variables.entityName & ' ';
+		if ( StructKeyExists( arguments, "ids" ) ){
+			hql &= ' where id in ( :ids ) ';
+			return ORMExecuteQuery( hql, arguments.ids );
+		}else{
+			return ORMExecuteQuery( hql );
+		}
+	}
+	
+	array function list(){
+		param name="arguments.order" default="";
+		var hql = ' from ' & variables.entityName & ' ';
+		
+		if ( StructKeyExists( arguments, "sort" ) ){
+			hql &= ' order by ' & arguments.sort & " " & arguments.order;
+		}
+		return ORMExecuteQuery( hql );
+	}
 
 	any function new(){
 		return EntityNew( variables.entityName );
 	}
 	
-
+	void function save( Entity ){
+		EntitySave( arguments.Entity );
+	}
 	
 	
 	/* ---------------------------- PRIVATE ---------------------------- */  
@@ -43,6 +86,7 @@ component {
 		var hql = ' from ' & variables.entityName & ' ';
 		var params = {};
 		var result = [];
+		var index = 0;
 		
 		if ( StructKeyExists( arguments, "filtercriteria" ) && StructCount( arguments.filtercriteria ) ) {
 			hql &= ' where ';

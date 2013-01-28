@@ -2,7 +2,7 @@ cfmlorm
 ======================================================================
 
 An experiment to see if can replicate GORM features in CFML. 
-This is not for use in production!
+**This is not for use in production (yet)!**
 
 Usage
 ----------------------------------------------------------------------
@@ -21,6 +21,11 @@ Usage
 
 Methods
 ----------------------------------------------------------------------
+
+### delete : Boolean
+
+	BookGateway.delete(1);
+	BookGateway.delete( Entity );
 
 ### find : Entity
 	// Dan brown's first BookGateway
@@ -43,9 +48,25 @@ Methods
 
 	BookGateway.get(1);
 	
+### getAll : Array
+
+	BookGateway.getAll("1,2,3");
+	BookGateway.getAll();
+	
+### list : Array
+
+	BookGateway.list();
+	BookGateway.list( sort="title" );
+	BookGateway.list( sort="title", order="desc" );
+	
 Non GORM stuff
 ----------------------------------------------------------------------
 
 ### new
 
 	BookGateway.new();
+	
+
+### save
+
+	BookGateway.save( Book );
