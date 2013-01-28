@@ -13,7 +13,7 @@ component {
 		if ( IsObject( arguments.param ) ){
 			var Entity = arguments.param;
 		}else{
-			var Entity = get( arguments.id );
+			var Entity = get( arguments.param );
 		}
 		if ( !IsNull( Entity ) ){
 			result = true;
@@ -66,9 +66,11 @@ component {
 		var hql = ' from ' & variables.entityName & ' ';
 		
 		if ( StructKeyExists( arguments, "sort" ) ){
-			hql &= ' order by ' & arguments.sort & " " & arguments.order;
+			arguments.sort &= ' ' & arguments.order;
+			return queryBuilder( {}, arguments.sort );
+		}else{
+			return queryBuilder( {} );
 		}
-		return ORMExecuteQuery( hql );
 	}
 
 	any function new(){
