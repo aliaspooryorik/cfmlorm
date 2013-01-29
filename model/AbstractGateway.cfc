@@ -86,11 +86,13 @@ component {
 	
 	/* ---------------------------- PRIVATE ---------------------------- */  
 	
-	private any function queryBuilder( struct filtercriteria, string sortorder, struct queryOptions ){
+	private any function queryBuilder( struct filtercriteria, string sortorder, struct queryOptions, boolean likeQuery ){
 		var hql = ' from ' & variables.entityName & ' ';
 		var params = {};
 		var result = [];
 		var whereClause = 0;
+		
+		param name="arguments.likeQuery" default="false"; 
 		
 		if ( StructKeyExists( arguments, "filtercriteria" ) && StructCount( arguments.filtercriteria ) ) {
 			for ( var key in arguments.filtercriteria ){
@@ -100,7 +102,11 @@ component {
 				}else{
 					hql &= ' and ';
 				}
-				hql &= LCase( key ) & ' = :#key# ';
+				if ( arguments.likeQuery ){
+					hql &= LCase( key ) & ' LIKE :#key# ';
+				}else{
+					hql &= LCase( key ) & ' = :#key# ';
+				}
 				params[ key ] = arguments.filtercriteria[ key ];
 				//ArrayAppend( params, arguments.filtercriteria[ key ] );
 			}
@@ -124,14 +130,18 @@ component {
 		if ( ReFind( "^find(All)?By", arguments.missingMethodName ) ){
 			var properties = ListToArray( Replace( ReReplace( arguments.missingMethodName, "^find(All)?By", "" ), "And", "|" ), "|" );
 			var filtercriteria = {};
+			var likeQuery = ReFind( "Like$", arguments.missingMethodName ) != 0;
 			for ( var i=1; i<= ArrayLen( properties ); i++ ){
+				if ( likeQuery ){
+					properties[ i ] = ReReplace( properties[ i ], "Like$", "" );
+				}
 				filtercriteria[ properties[ i ] ] = missingMethodArguments[ i ];
 			}
 			if ( ReFind( "^findAllBy", arguments.missingMethodName ) ){
-				return queryBuilder( filtercriteria=filtercriteria );
+				return queryBuilder( filtercriteria=filtercriteria, likeQuery=likeQuery );
 			}else{
 				// should only return one
-				var result = queryBuilder( filtercriteria=filtercriteria, queryOptions={maxresults=1} );
+				var result = queryBuilder( filtercriteria=filtercriteria, queryOptions={maxresults=1}, likeQuery=likeQuery );
 				if ( ArrayLen( result ) == 1 ) {
 					return result[ 1 ];
 				}

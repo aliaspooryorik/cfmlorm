@@ -84,6 +84,22 @@ component extends="mxunit.framework.TestCase" {
 		assertTrue( IsArray( result ) );
 		assertTrue( ArrayLen( result ) == 1 );
 	}
+	function findByLike(){
+		var result = CUT.findByForenameLike( 'J%' );
+		assertTrue( getComponentType( result ) == "Author" );
+		var result = CUT.findByForenameAndSurnameLike( 'J%', 'W%' );
+		assertTrue( getComponentType( result ) == "Author" );
+		assertTrue( result.getForename() == "John" );
+		assertTrue( result.getSurname() == "Whish" );
+	}
+	function findAllByLike(){
+		var result = CUT.findAllBySurnameLike( 'W%' );
+		assertTrue( IsArray( result ) );
+		assertTrue( ArrayLen( result ) == 2 );
+		var result = CUT.findAllByForenameAndSurnameLike( 'J%', '%h' );
+		assertTrue( IsArray( result ) );
+		assertTrue( ArrayLen( result ) == 1 );
+	}
 	
 	/* ---------------------------- IMPLICIT ---------------------------- */
 	

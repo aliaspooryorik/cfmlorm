@@ -10,8 +10,8 @@ http://sourceforge.net/apps/trac/coldspring/wiki/ORMAbstractGateway
 Usage
 ----------------------------------------------------------------------
 
-	// initiate
-	Gateway # new model.AbstractGateway( 'Author' );
+	// initialise
+	Gateway = new model.AbstractGateway( 'Author' );
 
 	// returns new
 	writeDump( Gateway.new() );
@@ -27,6 +27,12 @@ Usage
 
 	// returns 1st match as an Author object
 	writeDump( Gateway.findByForenameAndSurname( 'John', 'Whish' );
+	
+	// returns 1st match as an Author object
+	writeDump( Gateway.findByForenameAndSurnameLike( 'J%', 'W%' );
+	
+	// returns an array of Author entities
+	writeDump( Gateway.findAllByForenameAndSurnameLike( 'J%', 'W%' );
 	
 	// returns Author object or null
 	writeDump( Gateway.get( 1 );
