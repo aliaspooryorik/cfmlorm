@@ -4,4 +4,4 @@ component persistent="true" {
 	property name="forename" ormtype="string" length="50";
 	property name="surname" ormtype="string" length="50";
 	
-}   
+}

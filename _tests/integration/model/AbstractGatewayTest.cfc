@@ -3,7 +3,7 @@ component extends="mxunit.framework.TestCase" {
 	/* ---------------------------- UNIT TESTS ---------------------------- */
 	
 	function init(){
-		assertTrue( IsInstanceOf( CUT, "AbstractGateway" ) );
+		assertTrue( getComponentType( CUT ) == "AbstractGateway" );
 	}
 	
 	function delete(){
@@ -27,9 +27,10 @@ component extends="mxunit.framework.TestCase" {
 	
 	function get(){
 		assertTrue( IsNull( CUT.get( 9999 ) ) );
-		assertTrue( !IsNull( CUT.get( 1 ) ) );
-		assertTrue( IsInstanceOf( CUT.get( 1 ), "Author" ) );
-		assertEquals( 1, CUT.get( 1 ).getID() );
+		var result = CUT.get( 1 );
+		assertTrue( !IsNull( result ) );
+		assertTrue( getComponentType( result ) == "Author" );
+		assertEquals( 1, result.getID() );
 	}
 	
 	function getAll(){
@@ -63,15 +64,15 @@ component extends="mxunit.framework.TestCase" {
 	
 	function new(){
 		var result = CUT.new();
-		assertTrue( IsInstanceOf( result, "Author" ) );
+		assertTrue( getComponentType( result ) == "Author" );
 	}
 	
 	/* -- dynamic methods using onMissingMethod -- */
 	function findBy(){
 		var result = CUT.findByForename( 'John' );
-		assertTrue( IsInstanceOf( result, "Author" ) );
+		assertTrue( getComponentType( result ) == "Author" );
 		var result = CUT.findByForenameAndSurname( 'John', 'Whish' );
-		assertTrue( IsInstanceOf( result, "Author" ) );
+		assertTrue( getComponentType( result ) == "Author" );
 		assertTrue( result.getForename() == "John" );
 		assertTrue( result.getSurname() == "Whish" );
 	}
@@ -109,6 +110,15 @@ component extends="mxunit.framework.TestCase" {
 		q.execute();
 	}
 	function afterTests(){
+	}
+	
+	
+	/* ---------------------------- HELPER ---------------------------- */
+	private string function getComponentType( obj ){
+		if ( !IsNull( obj ) ) {
+			return ListLast( GetMetaData( obj ).name, "." );
+		}
+		return "";
 	}
 	
 }

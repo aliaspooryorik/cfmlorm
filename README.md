@@ -4,20 +4,38 @@ cfmlorm
 An experiment to see if can replicate GORM features in CFML. 
 **This is not for use in production (yet)!**
 
+If you're interested in this approach have a look at:
+http://sourceforge.net/apps/trac/coldspring/wiki/ORMAbstractGateway
+
 Usage
 ----------------------------------------------------------------------
 
 	// initiate
-	GroupGateway # new model.AbstractGateway( 'Group' );
+	Gateway # new model.AbstractGateway( 'Author' );
 
 	// returns new
-	writeDump( GroupGateway.new() );
+	writeDump( Gateway.new() );
 
-	// returns an array
-	writeDump( GroupGateway.findAllByTitle( 'foo' ) );
+	// returns an array of Author entities
+	writeDump( Gateway.list();
+	
+	// returns an array of Author entities matching passed ids
+	writeDump( Gateway.getAll( [1,3] );
 
-	// returns 1st match as an object
-	writeDump( GroupGateway.findByTitle( 'foo' ) );
+	// returns an array of Author entities
+	writeDump( Gateway.findAllByForenameAndSurname( 'John', 'Whish' );
+
+	// returns 1st match as an Author object
+	writeDump( Gateway.findByForenameAndSurname( 'John', 'Whish' );
+	
+	// returns Author object or null
+	writeDump( Gateway.get( 1 );
+	
+	// returns a boolean if Author deleted
+	writeDump( Gateway.delete( 1 );
+	
+	// saves Entity
+	writeDump( Gateway.save( object );
 
 Methods
 ----------------------------------------------------------------------
@@ -65,7 +83,6 @@ Non GORM stuff
 ### new
 
 	BookGateway.new();
-	
 
 ### save
 

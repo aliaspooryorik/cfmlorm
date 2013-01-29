@@ -4,14 +4,20 @@ component {
 	this.name = ReReplace( "[^W]", this.applicationroot & "_tests", "", "all" );
 
 	this.mappings[ "/model" ] = this.applicationroot & "model/";
+	this.mappings[ "/_tests" ] = this.applicationroot & "_tests/";
 
 	this.datasource = "cfmlorm";
 	this.ormenabled = true;
 	this.ormsettings = {
 		flushatrequestend = false
 		, automanagesession = false
-		, cfclocation = this.mappings[ "/model" ]
+		, cfclocation = this.mappings[ "/model" ] & "beans/"
 		, useDBForMapping = false
 	};
+	
+	function onRequestStart(){
+		ORMReload();
+		writeDump(this.mappings);
+	}
 	
 }
