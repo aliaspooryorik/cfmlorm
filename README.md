@@ -1,95 +1,66 @@
 cfmlorm
 ======================================================================
 
-An experiment to see if can replicate GORM features in CFML. 
-**This is not for use in production (yet)!**
+Impliment dynamic finders and helper methods in CFML ORM (powered by Hibernate), without needing to build concrete classes. Started out as an experiment to see if can replicate GORM features in CFML.
 
-If you're interested in this approach have a look at:
+After I started this, Mark Mandel pointed out that he's been working on something similiar in ColdSpring. Being Mark is going to be awesome! Check it out at:
 http://sourceforge.net/apps/trac/coldspring/wiki/ORMAbstractGateway
+
+v0.1 - use at your own risk
+
+MIT licence
 
 Usage
 ----------------------------------------------------------------------
 
 	// initialise
 	Gateway = new model.AbstractGateway( 'Author' );
+	
+	// delete by ID (returns boolean true / false if deleted)
+	Gateway.delete( 1 );
+	
+	// delete by object (returns boolean true / false if deleted)
+	Gateway.delete( obj );
+	
+	// returns Author object by id. returns null if no match
+	Gateway.get( 1 );
+	
+	// returns array of Author objects. 
+	Gateway.getAll();
+	
+	// returns an array of Author entities matching passed ids. returns empty array of no matches
+	Gateway.getAll( [1,3] );
 
+	// returns an array of Author entities
+	Gateway.list();
+	
+	// returns an array of Author entities sorted by name
+	Gateway.list( sort="forename" );
+	
+	// returns an array of Author entities sorted by name descending
+	Gateway.list( sort="forename", order="desc" );
+	
 	// returns new
-	writeDump( Gateway.new() );
+	Gateway.new();
 
-	// returns an array of Author entities
-	writeDump( Gateway.list();
+	// returns 1st match as an Author object on forename property
+	Gateway.findByForename( 'John' );
 	
-	// returns an array of Author entities matching passed ids
-	writeDump( Gateway.getAll( [1,3] );
-
-	// returns an array of Author entities
-	writeDump( Gateway.findAllByForenameAndSurname( 'John', 'Whish' );
-
-	// returns 1st match as an Author object
-	writeDump( Gateway.findByForenameAndSurname( 'John', 'Whish' );
+	// returns 1st match as an Author object on forename and surname property
+	Gateway.findByForenameAndSurname( 'John', 'Whish' );
 	
-	// returns 1st match as an Author object
-	writeDump( Gateway.findByForenameAndSurnameLike( 'J%', 'W%' );
+	// returns an array of Author entities on forename property
+	Gateway.findAllByForename( 'John' );
 	
-	// returns an array of Author entities
-	writeDump( Gateway.findAllByForenameAndSurnameLike( 'J%', 'W%' );
+	// returns an array of Author entities on forename and surname properties
+	Gateway.findAllByForenameAndSurname( 'John', 'Whish' );
 	
-	// returns Author object or null
-	writeDump( Gateway.get( 1 );
+	// returns 1st match as an Author object on forename and surname properties
+	Gateway.findByForenameAndSurnameLike( 'J%', 'W%' );
 	
-	// returns a boolean if Author deleted
-	writeDump( Gateway.delete( 1 );
+	// returns an array of Author entities matching on forename and surname properties
+	Gateway.findAllByForenameAndSurnameLike( 'J%', 'W%' );
 	
 	// saves Entity
-	writeDump( Gateway.save( object );
+	Gateway.save( object );
 
-Methods
-----------------------------------------------------------------------
-
-### delete : Boolean
-
-	BookGateway.delete(1);
-	BookGateway.delete( Entity );
-
-### find : Entity
-	// Dan brown's first BookGateway
-	BookGateway.find("from BookGateway as b where b.author#'Dan Brown'");
-	// with a positional parameter
-	BookGateway.find("from BookGateway as b where b.author#?", ['Dan Brown']);
-
-	// with a named parameter
-	BookGateway.find("from BookGateway as b where b.author#:author", {author: 'Dan Brown'});
-	
-### findBy* : Entity
-
-	BookGateway.findByTitleAndAuthor("The Sum of All Fears", "Tom Clancy");
-	
-### findAllBy* : Array
-
-	BookGateway.findAllByTitleAndAuthor("The Sum of All Fears", "Tom Clancy");
-
-### get : Entity
-
-	BookGateway.get(1);
-	
-### getAll : Array
-
-	BookGateway.getAll("1,2,3");
-	BookGateway.getAll();
-	
-### list : Array
-
-	BookGateway.list();
-	BookGateway.list( sort="title" );
-	BookGateway.list( sort="title", order="desc" );
-	
-Non GORM stuff
-----------------------------------------------------------------------
-
-### new
-
-	BookGateway.new();
-
-### save
-
-	BookGateway.save( Book );

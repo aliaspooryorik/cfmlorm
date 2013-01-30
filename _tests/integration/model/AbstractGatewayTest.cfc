@@ -67,6 +67,16 @@ component extends="mxunit.framework.TestCase" {
 		assertTrue( getComponentType( result ) == "Author" );
 	}
 	
+	function save( obj ){
+		var Author = CUT.new();
+		Author.setForename( "Joe" );
+		Author.setSurname( "Briggs" );
+		transaction{
+			CUT.save( Author );
+		}
+		assertEquals( 4, ArrayLen( CUT.list() ) );
+	}
+	
 	/* -- dynamic methods using onMissingMethod -- */
 	function findBy(){
 		var result = CUT.findByForename( 'John' );
