@@ -1,4 +1,4 @@
-cfmlorm
+CFMLORM
 ======================================================================
 
 Impliment dynamic finders and helper methods in CFML ORM (powered by Hibernate), without needing to build concrete classes. Started out as an experiment to see if can replicate GORM features in CFML.
@@ -6,9 +6,24 @@ Impliment dynamic finders and helper methods in CFML ORM (powered by Hibernate),
 After I started this, Mark Mandel pointed out that he's been working on something similiar in ColdSpring. Being Mark is going to be awesome! Check it out at:
 http://sourceforge.net/apps/trac/coldspring/wiki/ORMAbstractGateway
 
-v0.1 - use at your own risk
+Status
+----------------------------------------------------------------------
+
+v0.1 - it works, but hasn't been battle tested - use at your own risk
+
+Status
+----------------------------------------------------------------------
+
+Requirements
+
+Railo 3.3.4 or higher
+ColdFusion 9 or higher
+
+Licence
+----------------------------------------------------------------------
 
 MIT licence
+http://opensource.org/licenses/MIT
 
 Usage
 ----------------------------------------------------------------------
@@ -61,6 +76,6 @@ Usage
 	// returns an array of Author entities matching on forename and surname properties
 	Gateway.findAllByForenameAndSurnameLike( 'J%', 'W%' );
 	
-	// saves Entity
+	// saves Entity (Note - you'll want to wrap in a transaction)
 	Gateway.save( object );
 
