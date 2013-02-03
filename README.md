@@ -54,6 +54,9 @@ Usage
 	
 	// returns an array of Author entities sorted by name descending
 	Gateway.list( sort="forename", order="desc" );
+
+	// returns an array of Author entities limited to 5 and offset by 10
+	Gateway.list( offset=10, max=5 );
 	
 	// returns new
 	Gateway.new();
