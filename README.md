@@ -70,11 +70,17 @@ Usage
 	// returns an array of Author entities on forename and surname properties
 	Gateway.findAllByForenameAndSurname( 'John', 'Whish' );
 	
+	// returns an array of Author entities with an ID between 2 and 5
+	Gateway.findAllByIDBetween( 2, 5 );
+	
 	// returns 1st match as an Author object on forename and surname properties
 	Gateway.findByForenameAndSurnameLike( 'J%', 'W%' );
 	
 	// returns an array of Author entities matching on forename and surname properties
 	Gateway.findAllByForenameAndSurnameLike( 'J%', 'W%' );
+
+	// returns 1st match as an Author object on ID property between 2 and 5
+	Gateway.findAllByIDBetween( 2, 5 );
 	
 	// saves Entity (Note - you'll want to wrap in a transaction)
 	Gateway.save( object );

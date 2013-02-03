@@ -63,15 +63,21 @@ component {
 		}
 	}
 	
-	array function list( string sort, string order ){
+	array function list( string sort, string order, numeric offset, numeric max  ){
 		var hql = ' from ' & variables.entityName & ' ';
-		
+		var queryOptions = {};
+		if ( StructKeyExists( arguments, "offset" ) ){
+			queryOptions.offset = arguments.offset;
+		}
+		if ( StructKeyExists( arguments, "max" ) ){
+			queryOptions.maxresults = arguments.max;
+		}
 		if ( StructKeyExists( arguments, "sort" ) ){
 			param name="arguments.order" default="";
 			arguments.sort &= ' ' & arguments.order;
-			return queryBuilder( {}, arguments.sort );
+			return queryBuilder( filtercriteria={}, sortorder=arguments.sort, queryOptions=queryOptions );
 		}else{
-			return queryBuilder( {} );
+			return queryBuilder( queryOptions=queryOptions );
 		}
 	}
 
@@ -86,28 +92,34 @@ component {
 	
 	/* ---------------------------- PRIVATE ---------------------------- */  
 	
-	private any function queryBuilder( struct filtercriteria, string sortorder, struct queryOptions, boolean likeQuery ){
+	private any function queryBuilder( struct filtercriteria, string sortorder, struct queryOptions, boolean likeQuery, boolean betweenQuery ){
 		var hql = ' from ' & variables.entityName & ' ';
 		var params = {};
 		var result = [];
-		var whereClause = 0;
+		var hasWhereClause = false;
 		
 		param name="arguments.likeQuery" default="false"; 
 		
 		if ( StructKeyExists( arguments, "filtercriteria" ) && StructCount( arguments.filtercriteria ) ) {
 			for ( var key in arguments.filtercriteria ){
-				if ( whereClause == 0 ){
-					whereClause = 1;
+				if ( !hasWhereClause ){
 					hql &= ' where ';
+					hasWhereClause = true;
 				}else{
 					hql &= ' and ';
 				}
-				if ( arguments.likeQuery ){
-					hql &= LCase( key ) & ' LIKE :#key# ';
+				if ( IsArray( arguments.filtercriteria[ key ] ) ){ // between
+					hql &= LCase( key ) & ' BETWEEN :#key#_1 AND :#key#_2 ';
+					params[ key & "_1" ] = arguments.filtercriteria[ key ][ 1 ];
+					params[ key & "_2" ] = arguments.filtercriteria[ key ][ 2 ];
 				}else{
-					hql &= LCase( key ) & ' = :#key# ';
+					if ( arguments.likeQuery ){
+						hql &= LCase( key ) & ' LIKE :#key# ';
+					}else{
+						hql &= LCase( key ) & ' = :#key# ';
+					}
+					params[ key ] = arguments.filtercriteria[ key ];
 				}
-				params[ key ] = arguments.filtercriteria[ key ];
 				//ArrayAppend( params, arguments.filtercriteria[ key ] );
 			}
 		}
@@ -115,7 +127,7 @@ component {
 		if ( StructKeyExists( arguments, "sortorder" ) ) {
 			hql &= 'order by ' & arguments.sortorder;
 		}
-		
+//request.debug([hql,params,arguments]);
 		if ( StructKeyExists( arguments, "queryOptions" ) ) {
 			return ORMExecuteQuery( hql, params, arguments.queryOptions );
 		} else {
@@ -131,11 +143,17 @@ component {
 			var properties = ListToArray( Replace( ReReplace( arguments.missingMethodName, "^find(All)?By", "" ), "And", "|" ), "|" );
 			var filtercriteria = {};
 			var likeQuery = ReFind( "Like$", arguments.missingMethodName ) != 0;
+			var betweenQuery = ReFind( "Between$", arguments.missingMethodName ) != 0;
 			for ( var i=1; i<= ArrayLen( properties ); i++ ){
-				if ( likeQuery ){
-					properties[ i ] = ReReplace( properties[ i ], "Like$", "" );
+				if ( betweenQuery ){
+					properties[ i ] = ReReplace( properties[ i ], "Between$", "" );
+					filtercriteria[ properties[ i ] ] = [ missingMethodArguments[ i ], missingMethodArguments[ i+1 ] ];
+				}else{
+					if ( likeQuery ){
+						properties[ i ] = ReReplace( properties[ i ], "Like$", "" );
+					}
+					filtercriteria[ properties[ i ] ] = missingMethodArguments[ i ];
 				}
-				filtercriteria[ properties[ i ] ] = missingMethodArguments[ i ];
 			}
 			if ( ReFind( "^findAllBy", arguments.missingMethodName ) ){
 				return queryBuilder( filtercriteria=filtercriteria, likeQuery=likeQuery );
