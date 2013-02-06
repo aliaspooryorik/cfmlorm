@@ -111,7 +111,7 @@ component extends="mxunit.framework.TestCase" {
 	}
 	
 	function findAllIDBetween(){
-		var result = CUT.findAllByIDBetween( 1, 3 ); // returns 1st match between
+		var result = CUT.findAllByIDBetween( 1, 3 ); // returns array match between
 		assertTrue( IsArray( result ) );
 		assertEquals( 3, ArrayLen( result ) );
 	}

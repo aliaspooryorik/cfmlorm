@@ -184,11 +184,17 @@ component {
 			var properties = ListToArray( Replace( ReReplace( arguments.missingMethodName, "^find(All)?By", "" ), "And", "|" ), "|" );
 			var filtercriteria = {};
 			var likeQuery = ReFind( "Like$", arguments.missingMethodName ) != 0;
+			var betweenQuery = ReFind( "Between$", arguments.missingMethodName ) != 0;
 			for ( var i=1; i<= ArrayLen( properties ); i++ ){
-				if ( likeQuery ){
-					properties[ i ] = ReReplace( properties[ i ], "Like$", "" );
+				if ( betweenQuery ){
+					properties[ i ] = ReReplace( properties[ i ], "Between$", "" );
+					filtercriteria[ properties[ i ] ] = [ missingMethodArguments[ i ], missingMethodArguments[ i+1 ] ];
+				}else{
+					if ( likeQuery ){
+						properties[ i ] = ReReplace( properties[ i ], "Like$", "" );
+					}
+					filtercriteria[ properties[ i ] ] = missingMethodArguments[ i ];
 				}
-				filtercriteria[ properties[ i ] ] = missingMethodArguments[ i ];
 			}
 			if ( ReFind( "^findAllBy", arguments.missingMethodName ) ){
 				return queryBuilder( filtercriteria=filtercriteria, likeQuery=likeQuery );
@@ -212,6 +218,7 @@ component {
 		var hasWhereClause = false;
 		
 		param name="arguments.likeQuery" default="false"; 
+		
 		
 		if ( StructKeyExists( arguments, "filtercriteria" ) && StructCount( arguments.filtercriteria ) ) {
 			for ( var key in arguments.filtercriteria ){
