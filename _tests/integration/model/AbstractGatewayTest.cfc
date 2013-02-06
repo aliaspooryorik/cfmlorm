@@ -67,6 +67,15 @@ component extends="mxunit.framework.TestCase" {
 		assertTrue( getComponentType( result ) == "Author" );
 	}
 	
+	function newPopulate(){
+		var memento = { forename="John", surname="Whish" };
+		var result = CUT.new( memento );
+		assertTrue( getComponentType( result ) == "Author" );
+		debug( result );
+		assertEquals( "John", result.getForename() );
+		assertEquals( "Whish", result.getSurname() );
+	}
+	
 	function save( obj ){
 		var Author = CUT.new();
 		Author.setForename( "Joe" );

@@ -1,15 +1,25 @@
 CFMLORM
 ======================================================================
 
-Impliment dynamic finders and helper methods in CFML ORM (powered by Hibernate), without needing to build concrete classes. Started out as an experiment to see if can replicate GORM features in CFML.
+Implement dynamic finders and helper methods in CFML ORM (powered by Hibernate), without needing to build concrete classes. 
+Started out as an experiment to see if can replicate GORM features in CFML. 
 
-After I started this, Mark Mandel pointed out that he's been working on something similiar in ColdSpring. Being Mark is going to be awesome! Check it out at:
+The aim is to build something with no dependencies that can be used with a beanFactory or standalone.
+
+After I started this, Mark Mandel pointed out that he's been working on something similiar in ColdSpring. Being Mark it is going to be awesome! Check it out at:
 http://sourceforge.net/apps/trac/coldspring/wiki/ORMAbstractGateway
+https://github.com/markmandel/coldspring/blob/develop/coldspring/orm/hibernate/AbstractGateway.cfc
+
+The ColdBox team have an impressive and comprehensive ORM Service layer:
+http://wiki.coldbox.org/wiki/Extras:BaseORMService.cfm
+https://github.com/ColdBox/coldbox-platform/blob/master/system/orm/hibernate/BaseORMService.cfc
 
 Status
 ----------------------------------------------------------------------
 
-v0.1 - it works, but hasn't been battle tested - use at your own risk
+v0.2
+	it works, but hasn't been battle tested. Subject to API changes 
+	Use at your own risk :)
 
 Status
 ----------------------------------------------------------------------
@@ -57,6 +67,9 @@ Usage
 	
 	// returns new
 	Gateway.new();
+	
+	// returns new, populated memento
+	Gateway.new( memento );
 
 	// returns 1st match as an Author object on forename property
 	Gateway.findByForename( 'John' );
