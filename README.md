@@ -75,17 +75,29 @@ Usage
 	Gateway.new( memento );
 
 	// returns 1st match as an Author object on forename property
+	Gateway.findBy( {Forename='John'} );
+
+	// returns 1st match as an Author object on forename property
 	Gateway.findByForename( 'John' );
 	
 	// returns 1st match as an Author object on forename and surname property
 	Gateway.findByForenameAndSurname( 'John', 'Whish' );
+
+	// returns 1st match as an Author object on forename and surname property
+	Gateway.findBy( {Forename='John', Surname='Whish'} );
 	
 	// returns an array of Author entities on forename property
 	Gateway.findAllByForename( 'John' );
 	
+	// returns an array of Author entities on forename property
+	Gateway.findAllBy( {Forename='John'} );
+
 	// returns an array of Author entities on forename and surname properties
 	Gateway.findAllByForenameAndSurname( 'John', 'Whish' );
 	
+	// returns an array of Author entities on forename and surname properties
+	Gateway.findAllBy( {Forename='John', Surname='Whish'} );
+
 	// returns an array of Author entities with an ID between 2 and 5
 	Gateway.findAllByIDBetween( 2, 5 );
 	

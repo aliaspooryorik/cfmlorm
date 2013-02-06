@@ -22,26 +22,17 @@ component {
 		return result;
 	}
 	
-	// TODO: should this match GORM?
 	// Finds the first matching result for the given query or null if no instance is found
-	any function find( required string hql, any params, struct queryOptions ){
-		var result = [];
-		//param name="arguments.queryOptions" default="#StructNew()#";
-		arguments.queryOptions.maxresults = 1;
-		result = findAll( arguments.hql, arguments.params, arguments.queryOptions );
-		if ( ArrayLen( result ) == 1 ){
-			return result;
+	any function findBy( struct filtercriteria={} ){
+		var result = queryBuilder( filtercriteria=filtercriteria, queryOptions={maxresults=1} );
+		if ( ArrayLen( result ) != 0 ) {
+			return result[ 1 ];
 		}
 	}
 
-	// TODO: should this match GORM?
 	// Finds all of domain class instances matching the specified query
-	any function findAll( required string hql, any params={}, struct queryOptions ){
-		if ( StructKeyExists( arguments, "queryOptions" ) ){
-			return ORMExecuteQuery( hql, params, arguments.queryOptions );
-		}else{
-			return ORMExecuteQuery( hql, params );
-		}
+	array function findAllBy( struct filtercriteria={} ){
+		return queryBuilder( filtercriteria=filtercriteria );
 	}
 	
 	// Retrieves an instance of the domain class for the specified id. 
@@ -201,7 +192,7 @@ component {
 			}else{
 				// should only return one
 				var result = queryBuilder( filtercriteria=filtercriteria, queryOptions={maxresults=1}, likeQuery=likeQuery );
-				if ( ArrayLen( result ) == 1 ) {
+				if ( ArrayLen( result ) != 0 ) {
 					return result[ 1 ];
 				}
 			}

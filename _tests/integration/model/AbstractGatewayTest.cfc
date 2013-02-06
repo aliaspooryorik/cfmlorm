@@ -100,8 +100,21 @@ component extends="mxunit.framework.TestCase" {
 		assertEquals( 5, ArrayLen( CUT.list() ) );
 	}
 	
-	/* -- dynamic methods using onMissingMethod -- */
 	function findAllBy(){
+		var result = CUT.findAllBy( {surname='Whish'} );
+		assertTrue( IsArray( result ) );
+		assertEquals( 2, ArrayLen( result ) );
+		var result = CUT.findAllBy( {forename='John', surname='Whish'} );
+		assertTrue( IsArray( result ) );
+		assertEquals( 1, ArrayLen( result ) );
+		assertTrue( result[ 1 ].getForename() == "John" );
+		assertTrue( result[ 1 ].getSurname() == "Whish" );
+		var result = CUT.findAllBy( {forename='ZZZZZZ'} );
+		assertEquals( 0, ArrayLen( result ) );
+	}
+
+	/* -- dynamic methods using onMissingMethod -- */
+	function findAllByDynamic(){
 		var result = CUT.findAllBySurname( 'Whish' );
 		assertTrue( IsArray( result ) );
 		assertTrue( ArrayLen( result ) == 2 );
@@ -117,6 +130,17 @@ component extends="mxunit.framework.TestCase" {
 	}
 	
 	function findBy(){
+		var result = CUT.findBy( {surname='Whish'} );
+		assertTrue( getComponentType( result ) == "Author" );
+		var result = CUT.findBy( {forename='John', surname='Whish'} );
+		assertTrue( getComponentType( result ) == "Author" );
+		assertTrue( result.getForename() == "John" );
+		assertTrue( result.getSurname() == "Whish" );
+		var result = CUT.findBy( {forename='ZZZZZZ'} );
+		assertTrue( IsNull( result ) );
+	}
+	
+	function findByDynamic(){
 		var result = CUT.findByForename( 'John' );
 		assertTrue( getComponentType( result ) == "Author" );
 		var result = CUT.findByForenameAndSurname( 'John', 'Whish' );
