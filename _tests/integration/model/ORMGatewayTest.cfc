@@ -133,6 +133,14 @@ component extends="_tests.BaseTestCase" {
 		assertEquals( 2, ArrayLen( result ) );
 	}
 
+	// where 
+	
+	function dynamicwhereShouldReturnArray(){
+		var arg = {id=1};
+		var result = CUT.whereAuthor( 'id > :id and surname like :surname order by forename desc', {id=0, surname="W%" } );
+		assertEquals( 2, ArrayLen( result ) );
+	}
+
 
 	/* ---------------------------- IMPLICIT ---------------------------- */
 	
@@ -140,7 +148,7 @@ component extends="_tests.BaseTestCase" {
 	}
 	function setUp(){
 		CUT = new model.ORMGateway();
-		methodnames = "getByte,getByteByForename,listByte,listByteByForename,deleteByte,saveByte,newByte";
+		methodnames = "getByte,getByteByForename,listByte,listByteByForename,deleteByte,saveByte,newByte,whereByte";
 		
 		loadTestData();
 	}

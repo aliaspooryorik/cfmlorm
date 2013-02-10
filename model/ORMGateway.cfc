@@ -69,10 +69,12 @@ component {
 	* getEntity( {}, true ) - returns object by filter or new object
 	* listEntity() - returns array of objects
 	* listEntity( {} ) - returns array of objects by filter
-	* listEntityByProperty( value )
 	* deleteEntity( id )
 	* deleteEntity( object )
 	* saveEntity( object )
+	* whereEntity( clause, params )
+	* not yet supported:
+	* listEntityByProperty( value )
 	*/
 	any function onMissingMethod( required String missingMethodName, required struct missingMethodArguments ){
 		var args = {
@@ -93,6 +95,12 @@ component {
 				args.filter = arguments.missingMethodArguments[ 1 ]; 
 			}
 			return list( argumentCollection=args );
+		}else if ( arguments.missingMethodName.startsWith( "where" ) ){
+			args.clause = arguments.missingMethodArguments[ 1 ]; 
+			if ( ArrayIsDefined( arguments.missingMethodArguments, 2 ) ){
+				args.params = arguments.missingMethodArguments[ 2 ]; 
+			}
+			return where( argumentCollection=args );
 		}else if ( arguments.missingMethodName.startsWith( "new" ) ){
 			return new( args.entityname );
 		}
@@ -101,7 +109,7 @@ component {
 	/* ---------------------------- PRIVATE ---------------------------- */
 	
 	private string function extractEntityName( required string value ){
-		var result = ReReplace( arguments.value, "^(delete|get|list|new|save)", "" );
+		var result = ReReplace( arguments.value, "^(delete|get|list|new|save|where)", "" );
 		var index = Find( "By", result, 2 ); // note: case sensitive
 		if ( index == 0 ){
 			return result;
