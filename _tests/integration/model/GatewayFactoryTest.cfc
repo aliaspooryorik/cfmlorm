@@ -1,4 +1,4 @@
-component extends="mxunit.framework.TestCase" {
+component extends="_tests.BaseTestCase" {
 
 	/* ---------------------------- UNIT TESTS ---------------------------- */
 	

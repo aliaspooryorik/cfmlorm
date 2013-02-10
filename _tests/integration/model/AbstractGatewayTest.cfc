@@ -1,4 +1,4 @@
-component extends="mxunit.framework.TestCase" {
+component extends="_tests.BaseTestCase" {
 
 	/* ---------------------------- UNIT TESTS ---------------------------- */
 	
@@ -180,36 +180,13 @@ component extends="mxunit.framework.TestCase" {
 	function beforeTests(){
 	}
 	function setUp(){
-
-		var q = new Query();
-		q.setSQL( "
-			INSERT INTO AUTHOR 
-			( id, forename, surname, dob )
-			VALUES 
-			( 1, 'John', 'Whish', '1990-04-22' ),
-			( 2, 'Richard', 'Whish', '1980-04-22'  ),
-			( 3, 'Fred', 'Bloggs', '1970-04-22'  ),
-			( 4, 'Sam', 'Smith', '1960-04-22'  )
-		" );
-		q.execute();
-		
+		loadTestData();
 		CUT = new model.AbstractGateway( 'Author' ); 
 	}
 	function tearDown(){
-		var q = new Query();
-		q.setSQL( "DELETE FROM AUTHOR" );
-		q.execute();
+		clearTestData();
 	}
 	function afterTests(){
-	}
-	
-	
-	/* ---------------------------- HELPER ---------------------------- */
-	private string function getComponentType( obj ){
-		if ( !IsNull( obj ) ) {
-			return ListLast( GetMetaData( obj ).name, "." );
-		}
-		return "";
 	}
 	
 }
