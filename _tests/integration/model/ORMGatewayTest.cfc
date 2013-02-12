@@ -118,12 +118,41 @@ component extends="_tests.BaseTestCase" {
 		assertEquals( 4, ArrayLen( result ) );
 	}
 	
+	function listFilter(){
+		var result = CUT.list( 'Author', {surname="Whish"} );
+		assertEquals( 2, ArrayLen( result ) );
+	}
+	
+	function listFilterSort(){
+		var result = CUT.list( 'Author', {surname="Whish"}, "id,forename" );
+		assertEquals( 2, ArrayLen( result ) );
+		assertEquals( 1, result[ 1 ].getID() );
+		var result = CUT.list( 'Author', {surname="Whish"}, "id desc,forename" );
+		assertEquals( 2, ArrayLen( result ) );
+		assertEquals( 2, result[ 1 ].getID() );
+	}
+
+	
 	// dynamic list
 	
 	function dynamiclistShouldReturnAll(){
 		var result = CUT.listAuthor();
 		assertEquals( 4, ArrayLen( result ) );
-	}	
+	}
+	
+	function dynamiclistFilter(){
+		var result = CUT.listAuthor( {surname="Whish"} );
+		assertEquals( 2, ArrayLen( result ) );
+	}
+	
+	function dynamiclistFilterSort(){
+		var result = CUT.listAuthor( {surname="Whish"}, "id,forename" );
+		assertEquals( 2, ArrayLen( result ) );
+		assertEquals( 1, result[ 1 ].getID() );
+		var result = CUT.listAuthor( {surname="Whish"}, "id desc,forename" );
+		assertEquals( 2, ArrayLen( result ) );
+		assertEquals( 2, result[ 1 ].getID() );
+	}
 
 	// where 
 	

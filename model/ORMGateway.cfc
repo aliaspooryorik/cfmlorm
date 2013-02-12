@@ -48,8 +48,8 @@ component {
 		}
 	}
 	
-	array function list( required string entityname, struct filter={} ){
-		return EntityLoad( arguments.entityName, arguments.filter );
+	array function list( required string entityname, struct filter={}, string sortorder='', struct options={} ){
+		return EntityLoad( arguments.entityName, arguments.filter, arguments.sortorder, arguments.options );
 	}
 	
 	any function new( required string entityname, struct memento={} ){
@@ -93,6 +93,12 @@ component {
 		}else if ( arguments.missingMethodName.startsWith( "list" ) ){
 			if ( ArrayIsDefined( arguments.missingMethodArguments, 1 ) ){
 				args.filter = arguments.missingMethodArguments[ 1 ]; 
+			}
+			if ( ArrayIsDefined( arguments.missingMethodArguments, 2 ) ){
+				args.sortorder = arguments.missingMethodArguments[ 2 ]; 
+			}
+			if ( ArrayIsDefined( arguments.missingMethodArguments, 3 ) ){
+				args.options = arguments.missingMethodArguments[ 3 ]; 
 			}
 			return list( argumentCollection=args );
 		}else if ( arguments.missingMethodName.startsWith( "where" ) ){
