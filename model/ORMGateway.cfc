@@ -14,11 +14,12 @@ component {
 	/* ---------------------------- PUBLIC ---------------------------- */
 	
 	boolean function delete( required any arg ){
+		var result = false;
 		if ( IsObject( arguments.arg ) ){
 			EntityDelete( arguments.arg );
-			return true;
+			result = true;
 		}
-		return false;
+		return result;
 	}
 
 	boolean function deleteByID( required string entityname, required id ){
@@ -56,7 +57,7 @@ component {
 	}
 
 	void function save( required any entity ){
-		return EntitySave( arguments.entity );
+		EntitySave( arguments.entity );
 	}
 	
 	array function where( required string entityname, required string clause, struct params={} ){

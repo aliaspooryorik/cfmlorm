@@ -55,7 +55,6 @@ component {
 	}
 	
 	array function list( string sort, string order, numeric offset, numeric max  ){
-		var hql = ' from ' & variables.entityName & ' ';
 		var queryOptions = {};
 		if ( StructKeyExists( arguments, "offset" ) ){
 			queryOptions.offset = arguments.offset;
@@ -64,9 +63,11 @@ component {
 			queryOptions.maxresults = arguments.max;
 		}
 		if ( StructKeyExists( arguments, "sort" ) ){
-			param name="arguments.order" default="";
-			arguments.sort &= ' ' & arguments.order;
-			return queryBuilder( filtercriteria={}, sortorder=arguments.sort, queryOptions=queryOptions );
+			if ( StructKeyExists( arguments, "order" ) ){
+				arguments.sort = arguments.sort & ' ' & arguments.order;
+			}
+			var filtercriteria = {};
+			return queryBuilder( filtercriteria=filtercriteria, sortorder=arguments.sort, queryOptions=queryOptions );
 		}else{
 			return queryBuilder( queryOptions=queryOptions );
 		}
@@ -202,14 +203,12 @@ component {
 	
 	/* ---------------------------- PRIVATE ---------------------------- */  
 	
-		private any function queryBuilder( struct filtercriteria, string sortorder, struct queryOptions, boolean likeQuery, boolean betweenQuery ){
+	private any function queryBuilder( struct filtercriteria, string sortorder, struct queryOptions, boolean likeQuery, boolean betweenQuery ){
 		var hql = ' from ' & variables.entityName & ' ';
 		var params = {};
 		var result = [];
 		var hasWhereClause = false;
-		
 		param name="arguments.likeQuery" default="false"; 
-		
 		
 		if ( StructKeyExists( arguments, "filtercriteria" ) && StructCount( arguments.filtercriteria ) ) {
 			for ( var key in arguments.filtercriteria ){
@@ -238,7 +237,6 @@ component {
 		if ( StructKeyExists( arguments, "sortorder" ) ) {
 			hql &= 'order by ' & arguments.sortorder;
 		}
-//request.debug([hql,params,arguments]);
 		if ( StructKeyExists( arguments, "queryOptions" ) ) {
 			return ORMExecuteQuery( hql, params, arguments.queryOptions );
 		} else {

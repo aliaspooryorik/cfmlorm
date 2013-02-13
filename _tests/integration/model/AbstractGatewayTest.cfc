@@ -83,7 +83,6 @@ component extends="_tests.BaseTestCase" {
 		var memento = { forename="John", surname="Whish" };
 		var result = CUT.new( memento );
 		assertTrue( getComponentType( result ) == "Author" );
-		debug( result );
 		assertEquals( "John", result.getForename() );
 		assertEquals( "Whish", result.getSurname() );
 	}
@@ -184,7 +183,6 @@ component extends="_tests.BaseTestCase" {
 		CUT = new model.AbstractGateway( 'Author' ); 
 	}
 	function tearDown(){
-		clearTestData();
 	}
 	function afterTests(){
 	}

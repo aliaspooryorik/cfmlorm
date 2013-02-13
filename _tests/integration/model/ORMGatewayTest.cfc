@@ -3,8 +3,7 @@ component extends="_tests.BaseTestCase" {
 	/* ---------------------------- UNIT TESTS ---------------------------- */
 	
 	function init(){
-		var result = CUT.init();
-		assertTrue( getComponentType( result ) == "ORMGateway" );
+		assertTrue( getComponentType( CUT ) == "ORMGateway" );
 	}
 
 	/**
@@ -175,15 +174,17 @@ component extends="_tests.BaseTestCase" {
 	
 	function beforeTests(){
 	}
+	
 	function setUp(){
 		CUT = new model.ORMGateway();
 		methodnames = "getByte,getByteByForename,listByte,listByteByForename,deleteByte,saveByte,newByte,whereByte";
 		
 		loadTestData();
 	}
+	
 	function tearDown(){
-		clearTestData();
 	}
+	
 	function afterTests(){
 	}
 	
