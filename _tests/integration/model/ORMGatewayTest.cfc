@@ -168,6 +168,19 @@ component extends="_tests.BaseTestCase" {
 		var result = CUT.whereAuthor( 'id > :id and surname like :surname order by forename desc', {id=0, surname="W%" } );
 		assertEquals( 2, ArrayLen( result ) );
 	}
+	
+	// executeQuery
+	
+	function executeQuery(){
+		var result = CUT.executeQuery( hql=" from Author where id > :id ", params={id=0} );
+		assertEquals( 4, ArrayLen( result ) );
+		var result = CUT.executeQuery( hql=" from Author where id > ? ", params=[0] );
+		assertEquals( 4, ArrayLen( result ) );
+		var result = CUT.executeQuery( hql=" from Author " );
+		assertEquals( 4, ArrayLen( result ) );
+		var result = CUT.executeQuery( hql=" from Author ", queryOptions={maxresults=1} );
+		assertEquals( 1, ArrayLen( result ) );
+	}
 
 
 	/* ---------------------------- IMPLICIT ---------------------------- */

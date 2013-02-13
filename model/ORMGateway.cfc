@@ -65,6 +65,10 @@ component {
 		return ORMExecuteQuery( hql, arguments.params );
 	}
 	
+	any function executeQuery( required hql, params={}, unique=false, queryOptions={} ){
+		return ORMExecuteQuery( arguments.hql, arguments.params, arguments.unique, arguments.queryOptions );
+	}
+	
 	/*
 	* supports:
 	* getEntity( id ) - returns object by id or null
