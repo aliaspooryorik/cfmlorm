@@ -1,14 +1,13 @@
-/*
-* Rails Methods:
-*	find( id ) - returns single entity if found else null
-*	find( [ids] ) - returns array of entity where id in array
-*	where( "id > :id and active = :active", {id=1, active=true} ) - returns array of entities where id in array
-*/
 component {
-
+	/* 
+	------------------------------------------------------------------------
+	I am a standalone ORM service. You can extend or use as is
+	------------------------------------------------------------------------
+	*/
+	
+	
 	/* ---------------------------- CONSTRUCTOR ---------------------------- */  
 	any function init(){
-		variables.entitygateway = {};
 		return this;
 	}
 	
@@ -53,7 +52,11 @@ component {
 	}
 	
 	any function new( required string entityname, struct memento={} ){
-		return EntityNew( arguments.entityName );
+		return EntityNew( arguments.entityName, arguments.memento );
+	}
+
+	void function save( required any entity ){
+		return EntitySave( arguments.entity );
 	}
 	
 	array function where( required string entityname, required string clause, struct params={} ){
@@ -73,6 +76,7 @@ component {
 	* deleteEntity( object )
 	* saveEntity( object )
 	* whereEntity( clause, params )
+	
 	* not yet supported:
 	* listEntityByProperty( value )
 	*/
@@ -121,15 +125,6 @@ component {
 			return result;
 		}
 		return Left( result, index-1 );
-	}
-	
-	private any function getEntityGateway( required string entityname ){
-		lock name="getEntityGateway_#arguments.entityname#" timeout="15"{ 
-			if ( !StructKeyExists( variables.entitygateway, arguments.entityname ) ){
-				variables.entitygateway[ arguments.entityname ] = new AbstractGateway( arguments.entityname );
-			}
-		}
-		return variables.entitygateway[ arguments.entityname ];
 	}
 	
 }
