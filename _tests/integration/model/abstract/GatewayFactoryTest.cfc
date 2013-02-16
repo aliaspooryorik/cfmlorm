@@ -25,7 +25,7 @@ component extends="_tests.BaseTestCase" {
 	function beforeTests(){
 	}
 	function setUp(){
-		CUT = new model.GatewayFactory(); 
+		CUT = new model.abstract.GatewayFactory(); 
 	}
 	function tearDown(){
 	}

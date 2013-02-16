@@ -11,13 +11,12 @@ component {
 	this.ormsettings = {
 		flushatrequestend = false
 		, automanagesession = false
-		, cfclocation = this.mappings[ "/model" ] & "beans/"
+		, cfclocation = this.mappings[ "/model" ]
 		, useDBForMapping = false
 	};
 	
 	function onRequestStart(){
 		ORMReload();
-		writeDump(this.mappings);
 	}
 	
 }

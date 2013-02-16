@@ -180,7 +180,7 @@ component extends="_tests.BaseTestCase" {
 	}
 	function setUp(){
 		loadTestData();
-		CUT = new model.AbstractGateway( 'Author' ); 
+		CUT = new model.abstract.AbstractGateway( 'Author' ); 
 	}
 	function tearDown(){
 	}

@@ -189,7 +189,7 @@ component extends="_tests.BaseTestCase" {
 	}
 	
 	function setUp(){
-		CUT = new model.ORMGateway();
+		CUT = new model.abstract.ORMGateway();
 		methodnames = "getByte,getByteByForename,listByte,listByteByForename,deleteByte,saveByte,newByte,whereByte";
 		
 		loadTestData();

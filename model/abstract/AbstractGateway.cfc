@@ -54,6 +54,10 @@ component {
 		}
 	}
 	
+	string function getEntityName(){
+		return variables.entityName;
+	}
+	
 	array function list( string sort, string order, numeric offset, numeric max  ){
 		var queryOptions = {};
 		if ( StructKeyExists( arguments, "offset" ) ){
