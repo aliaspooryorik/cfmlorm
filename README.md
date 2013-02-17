@@ -6,6 +6,8 @@ Started out as an experiment to see if can replicate GORM features in CFML.
 
 The aim is to build something with no dependencies that can be used with a beanFactory or standalone.
 
+If you are using concrete DAOs, then it is recommended that you use a BeanFactory (the tests use DI/1)
+
 After I started this, Mark Mandel pointed out that he's been working on something similiar in ColdSpring. Being Mark it is going to be awesome! Check it out at:
 http://sourceforge.net/apps/trac/coldspring/wiki/ORMAbstractGateway
 https://github.com/markmandel/coldspring/blob/develop/coldspring/orm/hibernate/AbstractGateway.cfc
@@ -97,19 +99,20 @@ If you just want to get a reference to the DAO you can simple do:
 	DAO = new DAOFactory();
 	UserDAO = DAO.UserDAO();
 	
-If you don't want to take advantage of onMissingMethod you can do the same as:
+Once you have a reference to the UserDAO then you can call the methods directly if you 
+don't want to take advantage of onMissingMethod.
 
 	DAO = new DAOFactory();
 	UserDAO = DAO.getDAO( "User" );
 	
 	// get a User by ID
-	DAO.UserDAO.get( 1 );
+	UserDAO.get( 1 );
 	
 	// get new User
-	DAO.UserDAO.new();
+	UserDAO.new();
 	
 	// list Users
-	DAO.UserDAO.list();
+	UserDAO.list();
 
 The choice is yours!
 
