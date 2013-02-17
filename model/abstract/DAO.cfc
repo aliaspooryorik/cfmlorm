@@ -24,6 +24,7 @@ component accessors="true" {
 	-------------------------------------------------------- */
 	
 	any function init(){
+		variables.DAOs = {};
 		return this;
 	}
 	
@@ -31,14 +32,14 @@ component accessors="true" {
 	-------------------------------------------------------- */
 	
 	any function getDAO( required entityName ){
-		var gatewayName = arguments.entityName & "DAO";
-		if ( !variables.BeanFactory.containsBean( gatewayName ) ){
+		var DAOName = arguments.entityName & "DAO";
+		if ( !containsBean( DAOName ) ){
 			lock name="create_#arguments.entityName#" timeout="10"{
 				var VirtualDAO = new AbstractDAO( arguments.entityName );
-				variables.BeanFactory.addBean( gatewayName, VirtualDAO );			
+				addBean( DAOName, VirtualDAO );			
 			}
 		}
-		return variables.BeanFactory.getBean( gatewayName );
+		return getBean( DAOName );
 	}
 	
 	any function onMissingMethod( missingMethodName, missingMethodArguments ){
@@ -58,11 +59,39 @@ component accessors="true" {
 	/* Private Methods
 	-------------------------------------------------------- */
 	
+	private void function addBean( required beanName, required Bean ){
+		if ( hasBeanFactory() ){
+			variables.BeanFactory.addBean( arguments.beanName, arguments.Bean );
+		}else{
+			variables.DAOs[ arguments.beanName ] = arguments.Bean;
+		}
+	}
+	
+	private any function containsBean( required beanName ){
+		if ( hasBeanFactory() ){
+			return variables.BeanFactory.containsBean( arguments.beanName );
+		}else{
+			return StructKeyExists( variables.DAOs, arguments.beanName );
+		}
+	} 
+
 	private string function extractEntityName( required string methodname ){
 		// find index of last Uppercase character
 		var ordinal = reFind( "[A-Z](?=[^A-Z]*$)", arguments.methodname );
 		var result = Right( arguments.methodname, Len( arguments.methodname ) - ordinal + 1 );
 		return result;
+	}
+	
+	private any function getBean( required beanName ){
+		if ( hasBeanFactory() ){
+			return variables.BeanFactory.getBean( arguments.beanName );
+		}else{
+			return variables.DAOs[ arguments.beanName ];
+		}
+	}
+	
+	private boolean function hasBeanFactory(){
+		return StructKeyExists( variables, "BeanFactory" );
 	}
 
 }
