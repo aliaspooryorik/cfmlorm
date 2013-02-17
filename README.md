@@ -69,12 +69,11 @@ DAO would need to be instantiated like so:
 
 ### Virtual DAO Calls
 
-the DAO.cfc allows you to call methods in DAOs, the DAO.cfc will either create a virtual
-one of use the concrete one. It allow allows you to use some nice syntactical
-sugar.
+the DAOFactory.cfc allows you to call methods in DAOs, the DAOFactory.cfc will either 
+create a virtual one of use the concrete one. It allow allows you to use some nice 
+syntactical sugar.
 
-	// Note the DAO needs a beanfactory to work  
-	DAO = new DAO();
+	DAO = new DAOFactory();
 	
 	/*
 	Note: The DAO looks for the last part of the method name to determine which DAO
@@ -95,10 +94,12 @@ seamlessly in your application.
 
 If you just want to get a reference to the DAO you can simple do:
 
+	DAO = new DAOFactory();
 	UserDAO = DAO.UserDAO();
 	
 If you don't want to take advantage of onMissingMethod you can do the same as:
 
+	DAO = new DAOFactory();
 	UserDAO = DAO.getDAO( "User" );
 	
 	// get a User by ID

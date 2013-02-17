@@ -3,7 +3,7 @@ component extends="_tests.BaseTestCase" {
 	/* ---------------------------- UNIT TESTS ---------------------------- */
 	
 	function init(){
-		assertTrue( getComponentType( CUT ) == "DAO" );
+		assertTrue( getComponentType( CUT ) == "DAOFactory" );
 	}
 
 	function extractEntityName(){
@@ -81,7 +81,7 @@ component extends="_tests.BaseTestCase" {
 		
 		var beanFactory = new ioc( "/model", { singletonPattern = "(Gateway|Service|Factory)$" } );
 		
-		CUT = new model.abstract.DAO(); 
+		CUT = new model.abstract.DAOFactory(); 
 		CUT.setBeanFactory( beanFactory );
 	}
 	
