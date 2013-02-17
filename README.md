@@ -33,7 +33,7 @@ ColdFusion 9 or higher
 Usage
 ----------------------------------------------------------------------
 
-## Concept
+### Concept
 
 The idea behind this project is that you can use the AbstractDAO as an abstract
 class for you concrete DAOs to extend. However, I often find that my concrete
@@ -41,14 +41,14 @@ classes just extend the AbstractDAO and have no methods of their own. With this 
 mind, the AbstractDAO has been designed so that virtual DAOs can be created on the 
 fly.
 
-## Creating Virtual DAOs
+### Creating Virtual DAOs
 
 If you want to create a virtual DAO then simply pass in the entity name
 
 	// create a virtual DAO for the Author entity
 	AuthorDAO = new AbstractDAO( 'Author' );
 	
-## Creating Concrete DAOs
+### Creating Concrete DAOs
 
 If you want to extend the AbstractDAO with your own concrete DAOs then your
 DAO would need to be instantiated like so:
@@ -67,7 +67,7 @@ DAO would need to be instantiated like so:
 		
 	}
 
-## Virtual DAO Calls
+### Virtual DAO Calls
 
 the DAO.cfc allows you to call methods in DAOs, the DAO.cfc will either create a virtual
 one of use the concrete one. It allow allows you to use some nice syntactical
@@ -112,7 +112,7 @@ If you don't want to take advantage of onMissingMethod you can do the same as:
 
 The choice is yours!
 
-## Methods
+### Methods
 
 These are the methods you can call on the virtual / concrete DAO. I need to document these a bit better :)
 
