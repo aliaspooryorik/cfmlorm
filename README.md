@@ -17,7 +17,7 @@ https://github.com/ColdBox/coldbox-platform/blob/master/system/orm/hibernate/Bas
 Status
 ----------------------------------------------------------------------
 
-v0.2
+v0.5
 	it works, but hasn't been battle tested. Subject to API changes 
 	Use at your own risk :)
 
@@ -29,87 +29,152 @@ Requirements
 Railo 3.3.4 or higher
 ColdFusion 9 or higher
 
-Licence
-----------------------------------------------------------------------
-
-MIT licence
-http://opensource.org/licenses/MIT
 
 Usage
 ----------------------------------------------------------------------
 
-	// initialise
-	Gateway = new model.AbstractGateway( 'Author' );
-	
-	// delete by ID (returns boolean true / false if deleted)
-	Gateway.delete( 1 );
-	
-	// delete by object (returns boolean true / false if deleted)
-	Gateway.delete( obj );
-	
-	// returns Author object by id. returns null if no match
-	Gateway.get( 1 );
-	
-	// returns array of Author objects. 
-	Gateway.getAll();
-	
-	// returns an array of Author entities matching passed ids. returns empty array of no matches
-	Gateway.getAll( [1,3] );
+## Concept
 
-	// returns an array of Author entities
-	Gateway.list();
-	
-	// returns an array of Author entities sorted by name
-	Gateway.list( sort="forename" );
-	
-	// returns an array of Author entities sorted by name descending
-	Gateway.list( sort="forename", order="desc" );
+The idea behind this project is that you can use the AbstractDAO as an abstract
+class for you concrete DAOs to extend. However, I often find that my concrete
+classes just extend the AbstractDAO and have no methods of their own. With this in 
+mind, the AbstractDAO has been designed so that virtual DAOs can be created on the 
+fly.
 
-	// returns an array of Author entities limited to 5 and offset by 10
-	Gateway.list( offset=10, max=5 );
-	
-	// returns new
-	Gateway.new();
-	
-	// returns new, populated memento
-	Gateway.new( memento );
+## Creating Virtual DAOs
 
-	// returns 1st match as an Author object on forename property
-	Gateway.findBy( {Forename='John'} );
+If you want to create a virtual DAO then simply pass in the entity name
 
-	// returns 1st match as an Author object on forename property
-	Gateway.findByForename( 'John' );
+	// create a virtual DAO for the Author entity
+	AuthorDAO = new AbstractDAO( 'Author' );
 	
-	// returns 1st match as an Author object on forename and surname property
-	Gateway.findByForenameAndSurname( 'John', 'Whish' );
+## Creating Concrete DAOs
 
-	// returns 1st match as an Author object on forename and surname property
-	Gateway.findBy( {Forename='John', Surname='Whish'} );
-	
-	// returns an array of Author entities on forename property
-	Gateway.findAllByForename( 'John' );
-	
-	// returns an array of Author entities on forename property
-	Gateway.findAllBy( {Forename='John'} );
+If you want to extend the AbstractDAO with your own concrete DAOs then your
+DAO would need to be instantiated like so:
 
-	// returns an array of Author entities on forename and surname properties
-	Gateway.findAllByForenameAndSurname( 'John', 'Whish' );
+	component extends="model.abstract.AbstractDAO" {
 	
-	// returns an array of Author entities on forename and surname properties
-	Gateway.findAllBy( {Forename='John', Surname='Whish'} );
+		/* CONSTRUCTOR 
+		----------------------------------------------------------------- */
+		  
+		any function init(){
+			return super.init( 'Author' );
+		}
+		
+		/* YOUR METHODS HERE 
+		----------------------------------------------------------------- */
+		
+	}
 
-	// returns an array of Author entities with an ID between 2 and 5
-	Gateway.findAllByIDBetween( 2, 5 );
-	
-	// returns 1st match as an Author object on forename and surname properties
-	Gateway.findByForenameAndSurnameLike( 'J%', 'W%' );
-	
-	// returns an array of Author entities matching on forename and surname properties
-	Gateway.findAllByForenameAndSurnameLike( 'J%', 'W%' );
+## Virtual DAO Calls
 
-	// returns 1st match as an Author object on ID property between 2 and 5
-	Gateway.findAllByIDBetween( 2, 5 );
-	
-	// saves Entity (Note - you'll want to wrap in a transaction)
-	Gateway.save( object );
+the DAO.cfc allows you to call methods in DAOs, the DAO.cfc will either create a virtual
+one of use the concrete one. It allow allows you to use some nice syntactical
+sugar.
 
+	// Note the DAO needs a beanfactory to work  
+	DAO = new DAO();
+	
+	/*
+	Note: The DAO looks for the last part of the method name to determine which DAO
+	to use. In the following examples the UserDAO.cfc will be used
+	*/
+	
+	// get a User by ID
+	DAO.getUser( 1 );
+	
+	// get new User
+	DAO.newUser();
+	
+	// list Users
+	DAO.listUser();
+	
+The advantage of this approach is that you switch between virtual and concrete DAOs
+seamlessly in your application. 
+
+If you just want to get a reference to the DAO you can simple do:
+
+	UserDAO = DAO.UserDAO();
+	
+If you don't want to take advantage of onMissingMethod you can do the same as:
+
+	UserDAO = DAO.getDAO( "User" );
+	
+	// get a User by ID
+	DAO.UserDAO.get( 1 );
+	
+	// get new User
+	DAO.UserDAO.new();
+	
+	// list Users
+	DAO.UserDAO.list();
+
+The choice is yours!
+
+## Methods
+
+These are the methods you can call on the virtual / concrete DAO. I need to document these a bit better :)
+
+	// get one by id. returns null if no match
+	get( id )
+	
+	// get one by filter. returns null if no match
+	get( {} )
+	
+	// get one by id. returns new if no match
+	get( id, true )
+	
+	// get one by filter. returns new if no match
+	get( {}, true )
+	
+	// delete by id
+	deleteByID( id )
+	
+	// delete by passed entity
+	delete( obj )
+	
+	// returns the entity the DAO is managing
+	getEntityName()
+	
+	// returns arrays
+	list()
+	list( struct filter )
+	list( struct filter, string sortorder )
+	list( struct filter, string sortorder, struct options )
+	
+	// new
+	new()
+	new( struct memento ) // note: requires Railo 4 or ColdFusion 10
+	
+	// save
+	save( obj )
+	
+	// where
+	where( string clause, struct params )
+	where( string clause, array params )
+	
+	// where examples:
+	where( "id > :id and active = :active", {id=1,active=true})
+	where( "surname like ? order by forename", ['W%'])
+	
+	// executeQuery
+	executeQuery( required hql, params={}, unique=false, queryOptions={} )
+	
+	
+Licence
+----------------------------------------------------------------------
+
+   Copyright 2013 John Whish
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
