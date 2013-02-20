@@ -38,6 +38,7 @@ component accessors="true" {
 				var VirtualDAO = new AbstractDAO( arguments.entityName );
 				addBean( DAOName, VirtualDAO );			
 			}
+			return VirtualDAO;
 		}
 		return getBean( DAOName );
 	}
@@ -60,20 +61,23 @@ component accessors="true" {
 	-------------------------------------------------------- */
 	
 	private void function addBean( required beanName, required Bean ){
-		if ( hasBeanFactory() ){
-			variables.BeanFactory.addBean( arguments.beanName, arguments.Bean );
-		}else{
-			variables.DAOs[ arguments.beanName ] = arguments.Bean;
-		}
+		// to be compatible with Bean Factories where you can't add beans store locally
+		variables.DAOs[ arguments.beanName ] = arguments.Bean;
 	}
 	
 	private any function containsBean( required beanName ){
-		if ( hasBeanFactory() ){
-			return variables.BeanFactory.containsBean( arguments.beanName );
-		}else{
-			return StructKeyExists( variables.DAOs, arguments.beanName );
+		// to be compatible with Bean Factories where you can't add beans need to check both
+		var result = StructKeyExists( variables.DAOs, arguments.beanName );
+		if ( !result && hasBeanFactory() ){
+			if ( isBeanFactoryMethod( 'containsBean' ) ){
+				// note: Wirebox uses containsInstance instead of containsBean by default
+				result = variables.BeanFactory.containsBean( arguments.beanName );
+			}else{
+				result = variables.BeanFactory.containsInstance( arguments.beanName );
+			}
 		}
-	} 
+		return result;
+	}
 
 	private string function extractEntityName( required string methodname ){
 		// find index of last Uppercase character
@@ -83,15 +87,28 @@ component accessors="true" {
 	}
 	
 	private any function getBean( required beanName ){
-		if ( hasBeanFactory() ){
-			return variables.BeanFactory.getBean( arguments.beanName );
-		}else{
+		// to be compatible with Bean Factories where you can't add beans need to check both
+		if ( StructKeyExists( variables.DAOs, arguments.beanName ) ){
 			return variables.DAOs[ arguments.beanName ];
+		}else if ( hasBeanFactory() ){
+			if ( isBeanFactoryMethod( 'getBean' ) ){
+				return variables.BeanFactory.getBean( arguments.beanName );
+			}else{
+				return variables.BeanFactory.getInstance( arguments.beanName );
+			}
 		}
 	}
 	
 	private boolean function hasBeanFactory(){
 		return StructKeyExists( variables, "BeanFactory" );
+	}
+	
+	private boolean function isBeanFactoryMethod( methodname ){
+		var result = false;
+		if ( hasBeanFactory() ){
+			result = StructKeyExists( variables.BeanFactory, arguments.methodname );
+		}
+		return result;
 	}
 
 }

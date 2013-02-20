@@ -1,14 +1,16 @@
 CFMLORM
 ======================================================================
 
-Implement dynamic finders and helper methods in CFML ORM (powered by Hibernate), without needing to build concrete classes. 
-Started out as an experiment to see if can replicate GORM features in CFML. 
+Implement dynamic finders and helper methods in CFML ORM (powered by Hibernate), without 
+needing to build concrete classes.  
 
-The aim is to build something with no dependencies that can be used with a beanFactory or standalone.
+The aim is to build something with no dependencies that can be used with a beanFactory or 
+standalone.
 
 If you are using concrete DAOs, then it is recommended that you use a BeanFactory (the tests use DI/1)
 
-After I started this, Mark Mandel pointed out that he's been working on something similiar in ColdSpring. Being Mark it is going to be awesome! Check it out at:
+After I started this, Mark Mandel pointed out that he's been working on something similar in 
+ColdSpring. Being Mark it is going to be awesome! Check it out at:
 http://sourceforge.net/apps/trac/coldspring/wiki/ORMAbstractGateway
 https://github.com/markmandel/coldspring/blob/develop/coldspring/orm/hibernate/AbstractGateway.cfc
 
@@ -19,7 +21,7 @@ https://github.com/ColdBox/coldbox-platform/blob/master/system/orm/hibernate/Bas
 Status
 ----------------------------------------------------------------------
 
-v0.5
+v0.6
 	it works, but hasn't been battle tested. Subject to API changes 
 	Use at your own risk :)
 
@@ -38,10 +40,10 @@ Usage
 ### Concept
 
 The idea behind this project is that you can use the AbstractDAO as an abstract
-class for you concrete DAOs to extend. However, I often find that my concrete
-classes just extend the AbstractDAO and have no methods of their own. With this in 
-mind, the AbstractDAO has been designed so that virtual DAOs can be created on the 
-fly.
+class for you concrete DAOs to extend. However, I often find (particularly during 
+the early prototyping stages) that my concrete classes just extend the AbstractDAO 
+and have no methods of their own. With this in mind, the AbstractDAO has been designed 
+so that virtual DAOs can be created on the fly.
 
 ### Creating Virtual DAOs
 
@@ -69,11 +71,26 @@ DAO would need to be instantiated like so:
 		
 	}
 
-### Virtual DAO Calls
+## Using ColdSpring to create Virtual DAOs
+
+If you're are using ColdSpring then you could choose to have ColdSpring create and manage
+your virtual instances. An example config would be:
+
+	<bean id="SomethingDAO" class="model.AbstractDAO">
+		<constructor-arg name="entityName">
+			<value>Something</value>
+		</constructor-arg>
+	</bean>
+
+### Virtual DAO Calls using the DAOFactory
 
 the DAOFactory.cfc allows you to call methods in DAOs, the DAOFactory.cfc will either 
 create a virtual one of use the concrete one. It allow allows you to use some nice 
 syntactical sugar.
+
+Please note that if you have concrete classes then you will need to use a beanFactory as 
+the DAOFactory will get the concrete instance from the beanFactory. The DAOFactory will not
+search your file system!
 
 	DAO = new DAOFactory();
 	
@@ -91,8 +108,8 @@ syntactical sugar.
 	// list Users
 	DAO.listUser();
 	
-The advantage of this approach is that you switch between virtual and concrete DAOs
-seamlessly in your application. 
+The advantage of this approach is that you can start off using the virtual DAO and the switch 
+to a concrete DAO seamlessly in your application at a later date. 
 
 If you just want to get a reference to the DAO you can simple do:
 

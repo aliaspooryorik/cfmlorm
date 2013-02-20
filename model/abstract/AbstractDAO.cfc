@@ -85,4 +85,16 @@ component {
 		return ORMExecuteQuery( arguments.hql, arguments.params, arguments.unique, arguments.queryOptions );
 	}
 	
+	
+	any function onMissingMethod( missingMethodName, missingMethodArguments ){
+		var method = ReplaceNoCase( arguments.missingMethodName, variables.entityname, "" );
+		switch ( method ){
+			case "get":
+				return get( argumentCollection=arguments.missingMethodArguments );
+				break;
+			case "new":
+				return new( argumentCollection=arguments.missingMethodArguments );
+				break;
+		}
+	}
 }
