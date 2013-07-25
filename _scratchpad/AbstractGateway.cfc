@@ -212,8 +212,11 @@ component {
 		var params = {};
 		var result = [];
 		var hasWhereClause = false;
-		param name="arguments.likeQuery" default="false"; 
 		
+		if ( !StructKeyExists(arguments, "likeQuery") ){
+			arguments.likeQuery = false;
+		} 
+
 		if ( StructKeyExists( arguments, "filtercriteria" ) && StructCount( arguments.filtercriteria ) ) {
 			for ( var key in arguments.filtercriteria ){
 				if ( !hasWhereClause ){

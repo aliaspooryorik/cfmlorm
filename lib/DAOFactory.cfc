@@ -15,21 +15,18 @@
 */
 component accessors="true" {
 
-	/* Dependancies
-	-------------------------------------------------------- */
+	/* ---------------------------- DEPENDANCIES ---------------------------- */
 
 	property name="BeanFactory";
 	
-	/* Constructor
-	-------------------------------------------------------- */
+	/* ---------------------------- CONSTRUCTOR ---------------------------- */
 	
 	any function init(){
 		variables.DAOs = {};
 		return this;
 	}
 	
-	/* Public Methods
-	-------------------------------------------------------- */
+	/* ---------------------------- PUBLIC ---------------------------- */
 	
 	any function getDAO( required entityName ){
 		var DAOName = arguments.entityName & "DAO";
@@ -57,8 +54,7 @@ component accessors="true" {
 		}
 	}
 	
-	/* Private Methods
-	-------------------------------------------------------- */
+	/* ---------------------------- PRIVATE ---------------------------- */
 	
 	private void function addBean( required beanName, required Bean ){
 		// to be compatible with Bean Factories where you can't add beans store locally
@@ -81,7 +77,7 @@ component accessors="true" {
 
 	private string function extractEntityName( required string methodname ){
 		// find index of last Uppercase character
-		var ordinal = reFind( "[A-Z](?=[^A-Z]*$)", arguments.methodname );
+		var ordinal = ReFind( "[A-Z](?=[^A-Z]*$)", arguments.methodname );
 		var result = Right( arguments.methodname, Len( arguments.methodname ) - ordinal + 1 );
 		return result;
 	}

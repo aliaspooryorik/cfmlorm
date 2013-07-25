@@ -21,18 +21,30 @@ https://github.com/ColdBox/coldbox-platform/blob/master/system/orm/hibernate/Bas
 Status
 ----------------------------------------------------------------------
 
+v0.7
+	some bug fixes and enhancements
+	cleaned up project to make it more obvious how it works
+
 v0.6
 	it works, but hasn't been battle tested. Subject to API changes 
 	Use at your own risk :)
 
-Status
-----------------------------------------------------------------------
-
 Requirements
+----------------------------------------------------------------------
 
 Railo 3.3.4 or higher
 ColdFusion 9 or higher
 
+Note: if you want to use new( memento ) then you need ColdFusion 10 or
+Railo 4.
+
+Installing
+----------------------------------------------------------------------
+
+The minimal install is just to use the AbstractDAO.cfc. There is an optional
+DAOFactory.cfc which creates virtual or concrete DAOs on the fly. You can put
+these files wherever you like as long as they are in the same directory as each
+other.
 
 Usage
 ----------------------------------------------------------------------
@@ -52,12 +64,12 @@ If you want to create a virtual DAO then simply pass in the entity name
 	// create a virtual DAO for the Author entity
 	AuthorDAO = new AbstractDAO( 'Author' );
 	
-### Creating Concrete DAOs
+### Using With Concrete DAOs
 
 If you want to extend the AbstractDAO with your own concrete DAOs then your
 DAO would need to be instantiated like so:
 
-	component extends="model.abstract.AbstractDAO" {
+	component extends="cfmlorm.lib.AbstractDAO" {
 	
 		/* CONSTRUCTOR 
 		----------------------------------------------------------------- */
@@ -135,7 +147,8 @@ The choice is yours!
 
 ### Methods
 
-These are the methods you can call on the virtual / concrete DAO. I need to document these a bit better :)
+These are the methods you can call on the virtual / concrete DAO. I suggest you look at the
+unit tests to see how they work as I need to document these a bit better :)
 
 	// get one by id. returns null if no match
 	get( id )
@@ -171,9 +184,12 @@ These are the methods you can call on the virtual / concrete DAO. I need to docu
 	// save
 	save( obj )
 	
-	// where
+	// where - returns array unless unique is true when it will return an object
+	where( string clause )
 	where( string clause, struct params )
 	where( string clause, array params )
+	where( string clause, boolean unique )
+	where( string clause, boolean unique, struct queryOptions )
 	
 	// where examples:
 	where( "id > :id and active = :active", {id=1,active=true})

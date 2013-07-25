@@ -3,6 +3,7 @@ component {
 	this.applicationroot = ReReplace( getDirectoryFromPath( getCurrentTemplatePath() ), "_tests.$", "", "all" );
 	this.name = ReReplace( "[^W]", this.applicationroot & "_tests", "", "all" );
 
+	this.mappings[ "/lib" ] = this.applicationroot & "lib/";
 	this.mappings[ "/model" ] = this.applicationroot & "model/";
 	this.mappings[ "/_tests" ] = this.applicationroot & "_tests/";
 
@@ -16,6 +17,8 @@ component {
 	};
 	
 	function onRequestStart(){
+//		writedump(this.mappings);
+//		abort;
 		ORMReload();
 	}
 	

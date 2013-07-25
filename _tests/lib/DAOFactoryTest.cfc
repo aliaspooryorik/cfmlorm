@@ -27,6 +27,7 @@ component extends="_tests.BaseTestCase" {
 		var result = CUT.getDAO( "Post" );
 		assertEquals( "PostDAO", getComponentType( result ) ); 
 		assertEquals( "Post", result.getEntityName() );
+		assertTrue( result.concreteMethod() );
 	}
 
 	function getVirtualDAODynamically(){
@@ -81,7 +82,7 @@ component extends="_tests.BaseTestCase" {
 		
 		var beanFactory = new ioc( "/model", { singletonPattern = "(Gateway|Service|Factory)$" } );
 		
-		CUT = new model.abstract.DAOFactory(); 
+		CUT = new lib.DAOFactory(); 
 		CUT.setBeanFactory( beanFactory );
 	}
 	

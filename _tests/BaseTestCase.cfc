@@ -30,7 +30,7 @@ component extends="mxunit.framework.TestCase" {
 				( id, forename, surname, dob )
 				VALUES 
 				( 1, 'John', 'Whish', '1990-04-22' ),
-				( 2, 'Richard', 'Whish', '1980-04-22' ),
+				( 2, 'Theo', 'Whish', '1980-04-22' ),
 				( 3, 'Fred', 'Bloggs', '1970-04-22' ),
 				( 4, 'Sam', 'Smith', '1960-04-22' )
 			" );
