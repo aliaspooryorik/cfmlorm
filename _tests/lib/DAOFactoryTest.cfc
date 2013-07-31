@@ -22,26 +22,11 @@ component extends="_tests.BaseTestCase" {
 		assertEquals( "Author", result.getEntityName() );
 	}
 	
-	function getConcreteDAO(){
-		// post DAO does exist so use concrete one
-		var result = CUT.getDAO( "Post" );
-		assertEquals( "PostDAO", getComponentType( result ) ); 
-		assertEquals( "Post", result.getEntityName() );
-		assertTrue( result.concreteMethod() );
-	}
-
 	function getVirtualDAODynamically(){
 		// user DAO does not exist so should create one
 		var result = CUT.AuthorDAO();
 		assertEquals( "AbstractDAO", getComponentType( result ) ); 
 		assertEquals( "Author", result.getEntityName() );
-	}
-	
-	function getConcreteDAODynamically(){
-		// post DAO does exist so use should concrete one
-		var result = CUT.PostDAO();
-		assertEquals( "PostDAO", getComponentType( result ) ); 
-		assertEquals( "Post", result.getEntityName() );
 	}
 	
 	function callDAOGetMethodDynamically(){
@@ -80,10 +65,8 @@ component extends="_tests.BaseTestCase" {
 	function setUp(){
 		loadTestData();
 		
-		var beanFactory = new ioc( "/model", { singletonPattern = "(Gateway|Service|Factory)$" } );
-		
+		// Note without a beanfactory all DAOs will be virtual
 		CUT = new lib.DAOFactory(); 
-		CUT.setBeanFactory( beanFactory );
 	}
 	
 	function tearDown(){
