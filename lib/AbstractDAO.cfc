@@ -17,8 +17,12 @@ component {
 
 	/* ---------------------------- CONSTRUCTOR ---------------------------- */ 
 	 
-	any function init( required entityName ){
-		variables.entityName = arguments.entityname;
+	any function init( entityName ){
+		if ( StructKeyExists( arguments, "entityname" ) ){
+			variables.entityName = arguments.entityname;
+		}else{
+			variables.entityName = ReReplaceNoCase( ListLast( GetMetaData( this ).name, "." ), "DAO$", "", "one" );
+		}
 		return this;
 	}
 	
